@@ -1,5 +1,6 @@
 package com.pricesurvey.controller
 
+import DashboardFilters
 import com.pricesurvey.dto.dashboard.*
 import com.pricesurvey.service.DashboardService
 import org.springframework.http.ResponseEntity
