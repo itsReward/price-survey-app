@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: price-survey-app
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pricesurveydb
+    username: ${DB_USERNAME:pricesurvey}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    default-property-inclusion: NON_NULL
+
+  security:
+    user:
+      password: disabled
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.pricesurvey: INFO
+    org.springframework.security: DEBUG
+
+jwt:
+  secret: ${JWT_SECRET:supersecretkeythatisverylongandunguessable123456789}
+  expiration: ${JWT_EXPIRATION:86400000} # 24 hours in milliseconds
+
+app:
+  admin:
+    email: ${ADMIN_EMAIL:garvey@pricesurvey.com}
+    password: ${ADMIN_PASSWORD:admin123}
