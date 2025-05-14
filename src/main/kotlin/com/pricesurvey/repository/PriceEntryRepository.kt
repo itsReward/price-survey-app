@@ -5,6 +5,7 @@ import com.pricesurvey.entity.Store
 import com.pricesurvey.entity.Product
 import com.pricesurvey.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
@@ -45,4 +46,16 @@ interface PriceEntryRepository : JpaRepository<PriceEntry, Long> {
         @Param("userIds") userIds: List<Long>,
         @Param("storeIds") storeIds: List<Long>
     ): List<PriceEntry>
+
+    @Modifying
+    @Query("DELETE FROM PriceEntry pe WHERE pe.id = :id")
+    fun deletePriceEntry(@Param("id") id: Long): Int
+
+    @Modifying
+    @Query("DELETE FROM PriceEntry pe WHERE pe.user.id = :userId AND pe.id = :id")
+    fun deletePriceEntryByUserIdAndEntryId(
+        @Param("userId") userId: Long,
+        @Param("id") id: Long
+    ): Int
+
 }

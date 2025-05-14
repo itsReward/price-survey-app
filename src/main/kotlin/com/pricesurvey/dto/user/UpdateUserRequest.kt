@@ -4,6 +4,7 @@ data class UpdateUserRequest(
     val firstName: String?,
     val lastName: String?,
     val password: String?,
+    val role: String?,
     val isActive: Boolean?,
     val assignedStoreIds: List<Long>?
 )

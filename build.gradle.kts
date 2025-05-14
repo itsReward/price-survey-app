@@ -34,6 +34,11 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
 
+
+    // Google OAuth
+    implementation("com.google.api-client:google-api-client:1.34.1")
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-2.0.0")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")

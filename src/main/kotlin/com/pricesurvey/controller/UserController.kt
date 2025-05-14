@@ -42,9 +42,39 @@ class UserController(
         return ResponseEntity.ok(response)
     }
 
+    @PutMapping("/{id}/status")
+    fun updateUserStatus(
+        @PathVariable id: Long,
+        @RequestBody request: UserStatusRequest
+    ): ResponseEntity<UserResponse> {
+        val response = userService.updateUserStatus(id, request.isActive)
+        return ResponseEntity.ok(response)
+    }
+
+    @PutMapping("/{id}/stores")
+    fun assignStoresToUser(
+        @PathVariable id: Long,
+        @RequestBody request: AssignStoresRequest
+    ): ResponseEntity<UserResponse> {
+        val response = userService.assignStoresToUser(id, request.storeIds)
+        return ResponseEntity.ok(response)
+    }
+
     @DeleteMapping("/{id}")
     fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> {
         userService.deleteUser(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/pending")
+    fun getPendingUsers(): ResponseEntity<List<UserResponse>> {
+        val response = userService.getPendingUsers()
+        return ResponseEntity.ok(response)
+    }
+
+    @PutMapping("/{id}/approve")
+    fun approveUser(@PathVariable id: Long): ResponseEntity<UserResponse> {
+        val response = userService.approveUser(id)
+        return ResponseEntity.ok(response)
     }
 }

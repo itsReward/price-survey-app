@@ -1,5 +1,6 @@
 package com.pricesurvey.service
 
+import DashboardFilters
 import com.pricesurvey.dto.dashboard.*
 import com.pricesurvey.entity.User
 import com.pricesurvey.entity.UserRole

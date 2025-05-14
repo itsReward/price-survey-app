@@ -53,6 +53,22 @@ class PriceEntryService(
         return priceEntryRepository.findAll().map { convertToResponse(it) }
     }
 
+    @Transactional
+    fun deletePriceEntry(id: Long): Boolean {
+        val user = authService.getCurrentUser()
+        val priceEntry = priceEntryRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("Price entry not found with id: $id") }
+
+        // Check if user has permission to delete this entry
+        if (user.role != com.pricesurvey.entity.UserRole.ADMIN &&
+            priceEntry.user.id != user.id) {
+            throw IllegalArgumentException("User does not have permission to delete this price entry")
+        }
+
+        priceEntryRepository.deleteById(id)
+        return true
+    }
+
     fun getPriceEntriesWithFilters(filters: PriceEntryFilters): List<PriceEntryResponse> {
         return priceEntryRepository.findWithFilters(
             filters.userId,

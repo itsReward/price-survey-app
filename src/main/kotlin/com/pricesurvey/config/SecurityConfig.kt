@@ -47,9 +47,19 @@ class SecurityConfig(
         http.csrf { it.disable() }
             .authorizeHttpRequests { authz ->
                 authz
-                    .requestMatchers("/api/auth/**").permitAll()
+                    // Public endpoints - no authentication required
+                    .requestMatchers("/api/auth/login").permitAll()
+                    .requestMatchers("/api/auth/register").permitAll()
+                    .requestMatchers("/api/auth/google").permitAll()
+                    .requestMatchers("/api/auth/logout").permitAll()
+
+                    // Admin endpoints - require ADMIN role
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/actuator/**").permitAll() // For health checks if needed
+
+                    // Health check endpoints
+                    .requestMatchers("/actuator/**").permitAll()
+
+                    // All other endpoints require authentication
                     .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }

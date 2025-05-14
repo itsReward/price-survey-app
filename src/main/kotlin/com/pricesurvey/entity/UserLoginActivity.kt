@@ -17,10 +17,10 @@ data class UserLoginActivity(
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 
-    @Column(name = "ip_address")
+    @Column(name = "ip_address", length = 45) // Add length constraint
     val ipAddress: String? = null,
 
-    @Column(name = "user_agent")
+    @Column(name = "user_agent", columnDefinition = "TEXT")
     val userAgent: String? = null,
 
     @CreatedDate

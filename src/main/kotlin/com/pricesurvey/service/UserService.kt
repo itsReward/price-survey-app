@@ -31,11 +31,12 @@ class UserService(
 
         val user = User(
             email = request.email,
-            password = passwordEncoder.encode(request.password),
+            password = if (request.password != null) passwordEncoder.encode(request.password) else passwordEncoder.encode("TEMP_PASSWORD_${System.currentTimeMillis()}"),
             firstName = request.firstName,
             lastName = request.lastName,
             role = UserRole.valueOf(request.role.uppercase()),
-            assignedStores = stores
+            assignedStores = stores,
+            isActive = true // Admin-created users are active by default
         )
 
         val savedUser = userRepository.save(user)
@@ -57,10 +58,12 @@ class UserService(
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
 
+        // Only allow certain updates based on request
         val updatedUser = user.copy(
             firstName = request.firstName ?: user.firstName,
             lastName = request.lastName ?: user.lastName,
             password = request.password?.let { passwordEncoder.encode(it) } ?: user.password,
+            role = request.role?.let { UserRole.valueOf(it.uppercase()) } ?: user.role,
             isActive = request.isActive ?: user.isActive,
             assignedStores = request.assignedStoreIds?.let { storeIds ->
                 storeIds.map { storeId ->
@@ -75,6 +78,31 @@ class UserService(
     }
 
     @Transactional
+    fun updateUserStatus(id: Long, isActive: Boolean): UserResponse {
+        val user = userRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
+
+        val updatedUser = user.copy(isActive = isActive)
+        val savedUser = userRepository.save(updatedUser)
+        return convertToResponse(savedUser)
+    }
+
+    @Transactional
+    fun assignStoresToUser(id: Long, storeIds: List<Long>): UserResponse {
+        val user = userRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
+
+        val stores = storeIds.map { storeId ->
+            storeRepository.findById(storeId)
+                .orElseThrow { ResourceNotFoundException("Store not found with id: $storeId") }
+        }.toMutableSet()
+
+        val updatedUser = user.copy(assignedStores = stores)
+        val savedUser = userRepository.save(updatedUser)
+        return convertToResponse(savedUser)
+    }
+
+    @Transactional
     fun deleteUser(id: Long) {
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
@@ -82,6 +110,24 @@ class UserService(
         // Soft delete by deactivating the user
         val deactivatedUser = user.copy(isActive = false)
         userRepository.save(deactivatedUser)
+    }
+
+    fun getPendingUsers(): List<UserResponse> {
+        return userRepository.findByIsActive(false).map { convertToResponse(it) }
+    }
+
+    @Transactional
+    fun approveUser(id: Long): UserResponse {
+        val user = userRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("User not found with id: $id") }
+
+        if (user.isActive) {
+            throw IllegalArgumentException("User is already active")
+        }
+
+        val activatedUser = user.copy(isActive = true)
+        val savedUser = userRepository.save(activatedUser)
+        return convertToResponse(savedUser)
     }
 
     private fun convertToResponse(user: User): UserResponse {
