@@ -38,3 +38,4 @@ services:
         value: pricesurvey
       - key: POSTGRES_PASSWORD
         generateValue: true
+
