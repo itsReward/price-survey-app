@@ -61,8 +61,8 @@ logging:
 
 # JWT configuration
 jwt:
-  secret: ${JWT_SECRET:supersecretkeythatisverylongandunguessable123456789}
-  expiration: ${JWT_EXPIRATION:86400000}
+  secret: ${JWT_SECRET}
+  expiration: 86400000
 
 # App configuration
 app:
