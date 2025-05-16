@@ -32,6 +32,15 @@ spring:
     user:
       password: disabled
 
+  web:
+    cors:
+      allowed-origins: https://price-survey-frontend.onrender.com
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: Authorization,Content-Type,Origin,Accept,X-Requested-With
+      exposed-headers: Authorization
+      allow-credentials: true
+      max-age: 3600
+
 server:
   port: 8080
 
