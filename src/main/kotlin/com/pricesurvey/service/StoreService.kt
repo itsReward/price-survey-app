@@ -86,7 +86,7 @@ class StoreService(
     }
 
     fun getStoresForMap(): List<MapStoreResponse> {
-        return storeRepository.findByIsActive(true)
+        return storeRepository.findAll()
             .filter { it.latitude != null && it.longitude != null }
             .map { store ->
                 MapStoreResponse(
@@ -95,7 +95,8 @@ class StoreService(
                     address = store.address,
                     city = store.city,
                     latitude = store.latitude!!,
-                    longitude = store.longitude!!
+                    longitude = store.longitude!!,
+                    isActive = store.isActive
                 )
             }
     }
@@ -122,6 +123,7 @@ class StoreService(
         val address: String,
         val city: String,
         val latitude: java.math.BigDecimal,
-        val longitude: java.math.BigDecimal
+        val longitude: java.math.BigDecimal,
+        val isActive: Boolean
     )
 }

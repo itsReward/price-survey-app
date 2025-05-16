@@ -25,5 +25,5 @@ data class UserLoginActivity(
 
     @CreatedDate
     @Column(name = "logged_in_at", nullable = false, updatable = false)
-    val loggedInAt: LocalDateTime? = null
+    val loggedInAt: LocalDateTime? = LocalDateTime.now()
 )

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface StoreRepository : JpaRepository<Store, Long> {
+    override fun findAll(): List<Store>
+    
     fun findByIsActive(isActive: Boolean): List<Store>
 
     @Query("SELECT s FROM Store s WHERE s.city LIKE %:city% AND s.isActive = true")
