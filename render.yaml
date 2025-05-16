@@ -1,10 +1,10 @@
 services:
   - type: web
     name: price-survey-api
-    env: java
-    plan: starter
-    buildCommand: ./gradlew build -x test
-    startCommand: java -Dserver.port=$PORT -jar build/libs/price-survey-app-0.0.1-SNAPSHOT.jar
+    env: docker
+    region: oregon
+    plan: free
+    branch: main
     envVars:
       - key: DB_USERNAME
         sync: false
@@ -16,26 +16,9 @@ services:
         value: 86400000
       - key: SPRING_PROFILES_ACTIVE
         value: prod
-      - key: DATABASE_URL
-        fromDatabase:
-          name: price-survey-db
-          property: connectionString
-      - key: JAVA_OPTS
-        value: -Xmx512m -Xms256m
 
-  - type: pserv
-    name: price-survey-db
-    env: docker
-    plan: starter
-    dockerfilePath: ./Dockerfile.postgres
-    disk:
-      name: price-survey-data
-      mountPath: /var/lib/postgresql/data
-    envVars:
-      - key: POSTGRES_DB
-        value: pricesurveydb
-      - key: POSTGRES_USER
-        value: pricesurvey
-      - key: POSTGRES_PASSWORD
-        generateValue: true
+databases:
+  - name: pricesurveydb
+    plan: free
+    region: oregon
 
